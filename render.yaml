@@ -2,6 +2,7 @@ services:
   - type: web
     name: nexus-web
     runtime: php
+    phpVersion: "8.3"
     buildCommand: composer install --no-dev --optimize-autoloader && npm ci && npm run build
     startCommand: php artisan serve --host=0.0.0.0 --port=8080
     envVars:
@@ -37,12 +38,17 @@ services:
         value: 6001
       - key: VITE_REVERB_SCHEME
         value: http
+      - key: SESSION_DRIVER
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
 
   - type: worker
     name: nexus-worker
     runtime: php
+    phpVersion: "8.3"
     buildCommand: composer install --no-dev --optimize-autoloader
-    startCommand: sh -c "php artisan reverb:start --host=0.0.0.0 --port=6001 & php artisan queue:work --sleep=3 --tries=3"
+    startCommand: php artisan reverb:start --host=0.0.0.0 --port=6001 & php artisan queue:work --sleep=3 --tries=3
     envVars:
       - key: APP_ENV
         value: production
@@ -66,6 +72,8 @@ services:
         value: 6001
       - key: REVERB_SCHEME
         value: http
+      - key: QUEUE_CONNECTION
+        value: database
 
 databases:
   - name: nexus-db
