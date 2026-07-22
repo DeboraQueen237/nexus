@@ -5,6 +5,9 @@ services:
     plan: free
     build:
       dockerfilePath: ./Dockerfile
+    preDeployCommand: |
+      php artisan migrate --force
+      php artisan db:seed --class=RolesAndPermissionsSeeder --force
     envVars:
       - key: APP_ENV
         value: production
