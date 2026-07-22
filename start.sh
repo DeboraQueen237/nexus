@@ -2,10 +2,7 @@
 
 echo "Generating .env file..."
 
-# Supprimer l'ancien .env s'il existe
-rm -f .env
-
-# Créer un nouveau .env avec les variables essentielles
+# Générer un .env propre avec seulement les variables dont nous avons besoin
 cat > .env <<EOF
 APP_ENV=${APP_ENV:-production}
 APP_DEBUG=${APP_DEBUG:-false}
@@ -40,15 +37,15 @@ EOF
 
 echo "Fichier .env généré avec succès."
 
-# Générer le cache de configuration
+# Nettoyer le cache et régénérer
 php artisan config:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# Lancer les migrations (optionnel mais conseillé)
+# Migrations et seed (à exécuter une seule fois, mais on peut les laisser)
 php artisan migrate --force
 php artisan db:seed --class=RolesAndPermissionsSeeder --force
 
-# Démarrer Supervisord
+# Lancer Supervisord
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
