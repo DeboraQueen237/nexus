@@ -41,3 +41,10 @@ EXPOSE 8080
 
 # Démarrer supervisord (qui lancera Nginx, PHP-FPM, Reverb, Queue)
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
+# Installer les dépendances PHP et Node (en production)
+RUN composer install --no-dev --optimize-autoloader
+RUN npm ci && npm run build
+
+# 🔧 Forcer le cache de config avec les variables d'env du conteneur
+RUN php artisan config:cache
