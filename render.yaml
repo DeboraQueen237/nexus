@@ -3,7 +3,8 @@ services:
     name: nexus
     runtime: image
     plan: free
-    dockerfilePath: ./Dockerfile
+    build:
+      dockerfilePath: ./Dockerfile
     envVars:
       - key: APP_ENV
         value: production
@@ -16,7 +17,7 @@ services:
           name: nexus-db
           property: connectionString
       - key: BROADCAST_CONNECTION
-        value: reverb   # ou pusher si tu préfères
+        value: reverb
       - key: REVERB_APP_ID
         value: nexus
       - key: REVERB_APP_KEY
@@ -32,11 +33,11 @@ services:
       - key: VITE_REVERB_APP_KEY
         value: nexuskey
       - key: VITE_REVERB_HOST
-        value: 0.0.0.0   # Attention : le navigateur utilisera le domaine public
+        value: 0.0.0.0
       - key: VITE_REVERB_PORT
         value: 6001
       - key: VITE_REVERB_SCHEME
-        value: http      # Mais en réalité, le navigateur fera wss:// via le proxy Nginx
+        value: http
       - key: SESSION_DRIVER
         value: database
       - key: QUEUE_CONNECTION
