@@ -32,8 +32,11 @@ RUN npm ci && npm run build
 RUN mkdir -p storage/framework/views \
     && mkdir -p storage/framework/sessions \
     && mkdir -p storage/framework/cache \
-    && mkdir -p bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
+    && mkdir -p bootstrap/cache
+
+# Changer le propriétaire et les permissions (www-data est l'utilisateur de PHP-FPM)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Copier les configurations
 COPY nginx.conf /etc/nginx/sites-available/default
