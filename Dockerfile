@@ -11,27 +11,33 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nodejs \
     npm \
-    nginx
+    nginx \
+    supervisor
 
-# Installer les extensions PHP nécessaires
+# Installer les extensions PHP
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copier le code de l'application
+# Définir le répertoire de travail
 WORKDIR /var/www/html
+
+# Copier tout le code
 COPY . .
 
-# Installer les dépendances PHP et Node
+# Installer les dépendances PHP et Node (en production)
 RUN composer install --no-dev --optimize-autoloader
 RUN npm ci && npm run build
 
-# Configurer Nginx
+# Copier la configuration Nginx (on va la créer)
 COPY nginx.conf /etc/nginx/sites-available/default
 
-# Exposer le port 8080
+# Copier la configuration Supervisord (pour lancer plusieurs processus)
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Exposer le port 8080 (Render attend ce port pour le web)
 EXPOSE 8080
 
-# Script de démarrage (Laravel + Reverb + queue)
-CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=8080 & php artisan reverb:start --host=0.0.0.0 --port=6001 & php artisan queue:work --sleep=3 --tries=3"]
+# Démarrer supervisord (qui lancera Nginx, PHP-FPM, Reverb, Queue)
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

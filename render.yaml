@@ -3,6 +3,7 @@ services:
     name: nexus
     runtime: image
     plan: free
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: APP_ENV
         value: production
@@ -15,25 +16,27 @@ services:
           name: nexus-db
           property: connectionString
       - key: BROADCAST_CONNECTION
-        value: pusher
-      - key: PUSHER_APP_ID
-        value: 2178708
-      - key: PUSHER_APP_KEY
-        value: bad593465fb2355a632d
-      - key: PUSHER_APP_SECRET
-        value: 11853a6fad96afc80110
-      - key: PUSHER_APP_CLUSTER
-        value: mt1
-      - key: PUSHER_HOST
-        value: 
-      - key: PUSHER_PORT
-        value: 443
-      - key: PUSHER_SCHEME
-        value: https
-      - key: VITE_PUSHER_APP_KEY
-        value: bad593465fb2355a632d
-      - key: VITE_PUSHER_APP_CLUSTER
-        value: mt1
+        value: reverb   # ou pusher si tu préfères
+      - key: REVERB_APP_ID
+        value: nexus
+      - key: REVERB_APP_KEY
+        value: nexuskey
+      - key: REVERB_APP_SECRET
+        value: nexussecret
+      - key: REVERB_HOST
+        value: 0.0.0.0
+      - key: REVERB_PORT
+        value: 6001
+      - key: REVERB_SCHEME
+        value: http
+      - key: VITE_REVERB_APP_KEY
+        value: nexuskey
+      - key: VITE_REVERB_HOST
+        value: 0.0.0.0   # Attention : le navigateur utilisera le domaine public
+      - key: VITE_REVERB_PORT
+        value: 6001
+      - key: VITE_REVERB_SCHEME
+        value: http      # Mais en réalité, le navigateur fera wss:// via le proxy Nginx
       - key: SESSION_DRIVER
         value: database
       - key: QUEUE_CONNECTION
