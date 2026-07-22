@@ -28,6 +28,13 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 RUN npm ci && npm run build
 
+# Création des dossiers de stockage et permissions
+RUN mkdir -p storage/framework/views \
+    && mkdir -p storage/framework/sessions \
+    && mkdir -p storage/framework/cache \
+    && mkdir -p bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
 # Copier les configurations
 COPY nginx.conf /etc/nginx/sites-available/default
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
