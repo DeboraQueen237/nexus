@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Générer le fichier .env à partir des variables d'environnement
 echo "Generating .env file..."
 
 # Supprimer l'ancien .env s'il existe
@@ -46,6 +45,10 @@ php artisan config:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
+
+# Lancer les migrations (optionnel mais conseillé)
+php artisan migrate --force
+php artisan db:seed --class=RolesAndPermissionsSeeder --force
 
 # Démarrer Supervisord
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
