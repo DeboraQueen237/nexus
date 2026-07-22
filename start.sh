@@ -47,5 +47,6 @@ php artisan view:cache
 php artisan migrate --force
 php artisan db:seed --class=RolesAndPermissionsSeeder --force
 
+php artisan migrate --force
 # Lancer Supervisord
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
